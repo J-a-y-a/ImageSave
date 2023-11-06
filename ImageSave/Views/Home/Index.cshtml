@@ -1,0 +1,73 @@
+﻿@model IEnumerable<ImageSave.Models.Img_table>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+@using (Html.BeginForm("addnewrecord", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <p>
+            @Html.ActionLink("Add new", "addnewrecord")
+        @*@Html.ActionLink("addnewrecord", "Home")*@
+
+    </p>
+    <table class="table table-bordered">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.picture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.img_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.contenttype)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                   
+                    @{
+                        //Base64 converts binary data,image into readable string
+                        var base64 = Convert.ToBase64String(item.picture);
+                        //to display a byte array image from model
+                        var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
+                    }
+                    <img src='@imgsrc'style="width:200px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.img_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.contenttype)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.img_id })  |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.img_id })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+}
+<script>
+    $(document).ready(function () {
+        $('form').submit(function () {
+            var fileInput = $('input[type="file"]');
+            var fileSize = fileInput[0].files[0].size;
+            var fileType = fileInput.val().split('.').pop().toLowerCase();
+            if (fileSize > 4 * 1024 * 1024 || (fileType != 'jpg' && fileType != 'png')) {
+                alert('Please select a file smaller than 4MB and of type JPG or PNG');
+                return false;
+            }
+        });
+    });
+</script>
+
+

@@ -1,0 +1,99 @@
+﻿@model ImageSave.Models.Img_table
+@*@model IEnumerable<ImageSave.Models.Img_table>*@
+
+@{
+    ViewBag.Title = "addnewrecord";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>addnewrecord</h2>
+
+
+@using (Html.BeginForm("addnewrecord", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+  
+    <div class="form-horizontal">
+       @*<h4>UPLOADING IMAGE</h4>*@
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.img_name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.img_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.img_name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.picture, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.picture, new { htmlAttributes = new { @class = "form-control" } })*@
+                <input type="file" id="imgfile" name="imgfile" class="btn btn-info" />
+                @Html.ValidationMessageFor(model => model.picture, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.contenttype, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.contenttype, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.contenttype, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    @*<table>
+            <tr>
+                @foreach (var item in ViewBag.Imgdata
+
+
+
+                {
+                    <td>
+                        @{
+                            //Base64 converts binary data,image into readable string
+                            var base64 = Convert.ToBase64String(item.picture);
+                            //to display a byte array image from model
+                            var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
+                        }
+                        <img src='@imgsrc' width="100" height="100" style="max-width:100px" />
+                    </td>
+                }
+            </tr>
+        </table>*@
+   
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+        $("#imgfile").change(function () {
+                debugger;
+                $("#img_name").val(this.files[0].name);
+                $("#contenttype").val(this.files[0].type);
+        });
+       
+        $('input[type=text]').each(function () {
+            $(this).val('');
+        });
+        $('#imgfile').focus(function () {
+            $(this).val('');
+        });
+        });
+
+
+
+
+    </script>
+}

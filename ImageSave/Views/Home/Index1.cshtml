@@ -1,0 +1,293 @@
+﻿@model ImageSave.Models.Img_table
+
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index1</h2>
+<button class="btn btn-primary" style="float:right" data-toggle="modal" data-target="#Imagemodal">Create</button>@*data-toggle="modal" data-target="#TellEnquiry"*@
+<table id="ImageTable" class="table-bordered">
+    <thead>
+        <tr>
+            @*//<th>Imgid</th>*@
+            <th>ImageName</th>
+            <th>ContentType</th>
+            <th>Picture</th>
+            <th>Edit</th>
+            <th>Delete</th>
+            @*<th>Actions</th>*@
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="Imagemodal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" style="text-align:center">Image information</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <form id="Image">
+                        <div class="row">
+                            <label>picture</label>
+                            <input type="file" id="imagefile" name="imagefile" class="btn btn-info" />
+                            <label>Imagename</label>
+                            @Html.EditorFor(model => model.img_name, new { htmlAttributes = new { @class = "form-control" } })
+                            <label>Contenttype</label>
+                            @Html.EditorFor(model => model.contenttype, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </form>
+                </div>
+
+                @* <div class="form-horizontal">*@
+                @*<h4>UPLOADING IMAGE</h4>*@
+
+                @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    @Html.LabelFor(model => model.picture, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.picture, new { htmlAttributes = new { @class = "form-control" } })
+                        <input type="file" id="imgfile" name="imgfile" class="btn btn-info" />
+                        @Html.ValidationMessageFor(model => model.picture, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    @Html.LabelFor(model => model.img_name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.img_name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.img_name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    @Html.LabelFor(model => model.contenttype, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.contenttype, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.contenttype, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </form>
+        </div>*@
+            </div>
+                    <div class="modal-footer">
+                        <button id="btnsave" type="submit" class="btn btn-primary"> <span class="fa fa-save"></span>&nbsp;Save</button>
+                        <button id="btncancel" class="btn btn-danger" data-dismiss="modal"><span class="fa fa-close"></span>  Cancel</button>
+                    </div>
+
+
+    </div>
+</div>
+</div>
+@section scripts{
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/dataTables.bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            oTable = $('#ImageTable').DataTable({
+                "ajax": {
+                    "url": "/Home/GetImage",
+                    "type": "GET",
+                    "datatype": "json",
+                },
+                "columns": [
+                    { "data": "img_name", "autoWidth": true },
+                    { "data": "contenttype", "autoWidth": true },
+                    //{
+                    //    "data": "picture",
+                    //    render: function (data, type, row, meta) {
+                    //        var imgsrc = 'data:image/png;base64,' + data;
+                    //        return '<img class="img-responsive" src="' + imgsrc + '" alt="picture" height="100px" width="100px">';
+                            {
+                                "data": "imgfile",
+                                    "render": function (data) {
+                                        //return '<img src="data:image/gif;base64,{0},' + data + '" height="100px" width="100px" />';
+                                        return '<img class="img-responsive" src="' + data + '" alt="picture" height="100px" width="100px">';
+                                    }
+                    },
+                    {
+                        data: null, render: function (data, type, full, meta) {
+                            return '<a class="btn btn-info"  data-toggle="modal" data-target="#Employee" onclick=Edit(' + full.ID + ')>Edit</a>';
+                        }
+                        },
+                        {
+                            data: null, render: function (data, type, row) {
+                                return '<a href="#" class="btn btn-danger" onclick=DeleteData("' + row.ID + '"); >Delete</a>';
+                            }
+                            },
+                    
+                    
+                ]
+            });
+            $(function () {
+            //debugger
+                $("#imgfile").change(function () {
+                    $("#img_name").val(this.files[0].name);
+                    $("#contenttype").val(this.files[0].type);
+            });
+            });
+            //$("#imgfile").change(function () {
+            //    debugger;
+            //    $("#img_name").val(this.files[0].name);
+            //    $("#contenttype").val(this.files[0].type);
+            //});
+
+           // $("#btnsave").click(function () {
+           // debugger
+           //     var files = $("#imagefile").get(0).files;
+           //// var Id = $("#Id").val();
+           //     Imagename = $("#img_name").val();
+           //     ContentType = $("#contenttype").val();
+           // var fileData = new FormData();
+           // for (var i = 0; i < files.length; i++) {
+           //     fileData.append("imgfile", files[i]);
+           //     //fileData.append("Id", Id);
+           //     fileData.append("img_name", Imagename);
+           //     fileData.append("contenttype", ContentType);
+           // }
+           // $.ajax({
+           //     type: "Post",
+           //     url: "/Home/addnewrecord",
+           //     data: fileData,
+           //     dataType: "json",
+           //     processData: false,
+           //     contentType: false,
+           //     success: function (data) {
+           //         debugger;
+           //         alert(data);
+           //         if (data.success == true) {
+           //             alert(data.message);
+           //             oTable.ajax.reload();
+           //             window.location.reload();
+           //         }
+                  
+
+           //     } 
+           // });
+           // });
+            $("#btnsave").click(function () {
+                debugger;
+                var files = $("#imgfile").get(0).files;
+                var maxFileSize = 4 * 1024 * 1024; // 4MB
+                var fileSize = files[0].size;
+                if (fileSize > maxFileSize) {
+                    alert('File size exceeds 4MB limit');
+                    return;
+                }
+                var Imagename = $("#img_name").val();
+                var ContentType = $("#contenttype").val();
+
+                var fileData = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    if (!file.type.match('image/jpeg||image/png')) {
+                        alert('Only JPG and PNG files are allowed');
+                        return;
+                    }
+                    fileData.append("imgfile", file);
+                    fileData.append("img_name", Imagename);
+                    fileData.append("contenttype", ContentType);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/addnewrecord",
+                    data: fileData,
+                    dataType: "json",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success == true) {
+                            alert(data.message);
+                            oTable.ajax.reload();
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+
+
+         function Edit(r) {
+             debugger;
+            $.ajax({
+                 type: 'GET',
+                 //url: "/Home/Edit",
+                 url: '@Url.Action("Edit", "Home")/' + r,
+                 datatype: "json",
+                 //data: { id: data },
+                 success: function (Result) {
+                     $('#Id').val(Result.Id);
+                     $('#imgfile').val(Result.imagefile);
+                     $("#img_name").val(Result.Imagename);
+                     $("#contenttype").val(Result.Contenttype);
+                 //$('#ImageTask').show();
+                   if (Result.success == true) {
+                       alert(Result.message);
+                       window.location.reload();
+
+                    oTable.ajax.reload();
+                   }
+                 },
+
+            });
+         }
+
+        function DeleteData(Id) {
+            if (confirm("Are you sure you want to delete ...?")) {
+                Delete(Id);
+            }
+            else {
+                return false;
+            }
+        }
+        function Delete(Id) {
+            debugger
+            var url = '@Url.Content("~/")' + "Home/Delete";
+            $.post(url, { id: Id }, function (data) {
+                if (data == "Deleted") {
+                    alert("Deleted Image !");
+                    oTable.ajax.reload();
+                }
+                else {
+                    alert("Something Went Wrong!");
+                }
+            });
+        }
+            //debugger;
+            //$('#Image').validate({
+            //    rules: {
+            //        imagefile: {
+            //            required: true,
+            //            accept: "image/jpeg, image/png",
+            //            filesize: 4 * 1024 * 1024 // 4MB
+            //        }
+            //    },
+            //    messages: {
+            //        imagefile: {
+            //            required: "Please select a file.",
+            //            accept: "Only JPG and PNG files are allowed.",
+            //            filesize: "File size must be less than 4MB."
+            //        }
+            //    }
+            //});
+        });
+
+
+
+
+
+
+
+    </script>
+}
+
+
